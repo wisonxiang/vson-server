@@ -1,11 +1,10 @@
-const Koa = require('koa')
+require("module-alias/register");
+const Koa = require("koa");
+const bodyParser = require("koa-bodyparser");
+const InitManager = require("@core/init");
 
-const app = new Koa()
+const app = new Koa();
+app.use(bodyParser());
+InitManager.InitCore(app);
 
-app.use((ctx,next)=>{
-    ctx.body = {
-        res:'hello koa'
-    }
-})
-
-app.listen(3000)
+app.listen(3000);
