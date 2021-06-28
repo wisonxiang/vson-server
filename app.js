@@ -52,4 +52,4 @@ io.on("connection", (socket) => {
 app.use(bodyParser());
 InitManager.InitCore(app);
 
-app.listen(3000);
+http.listen(3000, () => {});
