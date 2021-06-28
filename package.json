@@ -14,7 +14,8 @@
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.4.0",
     "module-alias": "^2.2.2",
-    "require-directory": "^2.1.1"
+    "require-directory": "^2.1.1",
+    "socket.io": "^4.1.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
