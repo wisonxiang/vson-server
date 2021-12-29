@@ -52,3 +52,4 @@ app.use(bodyParser());
 InitManager.InitCore(app);
 
 http.listen(3000, () => {});
+//test
