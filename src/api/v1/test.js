@@ -1,8 +1,7 @@
 import router from './index.js';
-import { logger } from '@/utils/logger.js';
 
 router.get('/test', (ctx) => {
-  ctx.body = 'hello test'
+  ctx.success({msg:'v1接口test'})
 });
 
 export default router
