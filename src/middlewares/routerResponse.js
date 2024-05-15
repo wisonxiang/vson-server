@@ -10,6 +10,7 @@ export default function routerResponse(option = {}) {
     };
 
     ctx.fail = function ({msg, code}) {
+      console.log('77777777',code);
       // ctx.type = option.type || 'json'
       ctx.body = {
         code: code || option.failCode || 500,
