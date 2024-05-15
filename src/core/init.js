@@ -3,6 +3,11 @@ import fs from 'fs'
 
 const apiList = [{path:'/api/v1'},{path:'/api/v2'}]
 function initCore(app) {
+  initGptKey()
+  initRoutes(app)
+}
+
+function initRoutes(app){
   apiList.forEach(api=>{
     const apiDir =  path.resolve(__dirname,`..${api.path}`)
     fs.readdirSync(apiDir).forEach((file)=>{
@@ -14,7 +19,8 @@ function initCore(app) {
   })
 }
 
-export { initCore }
+function initGptKey(){
+   global.__gptkey = fs.readFileSync(`${process.cwd()}/gptkey`,'utf-8')
+}
 
-// import Router from "koa-router";
-// const router = new Router()
+export { initCore }
