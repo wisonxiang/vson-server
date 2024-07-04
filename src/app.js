@@ -14,6 +14,6 @@ app.use(koaBody())
 initCore(app);
 const httpServer = createSocket(app)
 
-httpServer.listen(3100, () => {
-  console.log('服务启动成功：3100');
+httpServer.listen(3200, () => {
+  console.log('服务启动成功：3200');
 });
