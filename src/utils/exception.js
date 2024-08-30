@@ -6,6 +6,6 @@ export class HttpException extends Error {
   }
 }
 
-export function responseError({msg, code}) {
+export function responseError({ msg, code }) {
   throw new HttpException(msg, code);
 }

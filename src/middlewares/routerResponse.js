@@ -1,6 +1,6 @@
 export default function routerResponse(option = {}) {
   return async function (ctx, next) {
-    ctx.success = function ({msg, code, data}) {
+    ctx.success = function ({ msg, code, data }) {
       // ctx.type = option.type || 'json'
       ctx.body = {
         code: code || option.successCode || 0,
@@ -9,8 +9,7 @@ export default function routerResponse(option = {}) {
       };
     };
 
-    ctx.fail = function ({msg, code}) {
-      console.log('77777777',code);
+    ctx.fail = function ({ msg, code }) {
       // ctx.type = option.type || 'json'
       ctx.body = {
         code: code || option.failCode || 500,

@@ -6,6 +6,6 @@ export default async function catchError(ctx, next) {
   } catch (error) {
     logger.error('全局异常', error);
     console.dir(error);
-    ctx.fail({msg:error.msg || '服务器异常',code:error.code});
+    ctx.fail({ msg: error.msg || '服务器异常', code: error.code });
   }
 }

@@ -21,7 +21,7 @@ export function delSocketUser(user) {
   const room = socketMap.get(user.roomId);
   if (!room) return false;
   room.delete(user.userId);
-  if(!room.size){
-    socketMap.delete(room)
+  if (!room.size) {
+    socketMap.delete(room);
   }
 }
