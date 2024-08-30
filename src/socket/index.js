@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import { addSocketUser, delSocketUser } from './socketStore.js';
+import { createRoom, joinRoom, leaveRoom } from './roomStore.js';
 import { nanoid } from 'nanoid';
 
 // function createSocket(app){
@@ -64,45 +64,35 @@ function createSocket(app) {
   gSocket.on('connection', (socket) => {
     gSocket.emit('online-nums', gSocket.sockets.size);
 
-    let user, room;
     socket.on('create-room', (obj, callback) => {
-      const id = nanoid().console.log('id', id);
-      console.log('obj', obj);
+      const id = nanoid();
+      socket.join(id);
+      createRoom({ ...obj, id, nums: 1 });
       callback(id);
-      // user = obj
-      // room = gSocket.adapter.rooms.get(user.roomId)
-      // const roomSize = room?.size ?? 0
-      // if(roomSize>=10) return callback(roomSize)
-      // socket.join(user.roomId)
-      // addSocketUser(user,socket.id)
-      // socket.to(user.roomId).emit('roomSize',roomSize+1)
+      gSocket.emit('update-rooms');
     });
     socket.on('join-room', (obj, callback) => {
-      user = obj;
-      room = gSocket.adapter.rooms.get(user.roomId);
-      const roomSize = room?.size ?? 0;
-      if (roomSize >= 10) return callback(roomSize);
-      socket.join(user.roomId);
-      addSocketUser(user, socket.id);
-      socket.to(user.roomId).emit('roomSize', roomSize + 1);
-    });
-    socket.on('leave-room', (obj, callback) => {
-      if (user?.roomId) {
-        socket.leave(user.roomId);
-        delSocketUser(user, socket.id);
-        room = gSocket.adapter.rooms.get(user.roomId);
-        const roomSize = room?.size || 0;
-        socket.to(userInfo.roomId).emit('roomSize', roomSize);
-        callback(roomSize);
+      const room = joinRoom(obj);
+      if (room) {
+        socket.join(room.id);
+        gSocket.emit('update-rooms');
+      } else {
+        callback(false);
       }
+    });
+    socket.on('leave-room', (obj) => {
+      leaveRoom(obj.id);
+      socket.leave(obj.id);
+      gSocket.emit('update-rooms');
+    });
+
+    socket.on('msg', (obj) => {
+      socket.to(obj.id).emit('msg', obj.msg);
     });
     socket.on('disconnect', () => {
+      leaveRoom(socket.conn.id);
       gSocket.emit('online-nums', gSocket.sockets.size);
-      if (user?.roomId) {
-        console.log('~~~~~~~~', room);
-        socket.to(user.roomId).emit('roomSize', room?.size);
-        delSocketUser(user);
-      }
+      gSocket.emit('update-rooms');
     });
   });
   return httpServer;
