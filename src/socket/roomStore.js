@@ -6,6 +6,8 @@ export function createRoom(obj) {
 
 export function joinRoom(obj) {
   const room = roomList.find((item) => item.id === obj.id);
+  if (!room) return false;
+  if (!!room.password && room.password !== obj.password) return false;
   room.nums = room.nums + 1;
   return room;
 }

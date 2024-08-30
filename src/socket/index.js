@@ -64,11 +64,12 @@ function createSocket(app) {
   gSocket.on('connection', (socket) => {
     gSocket.emit('online-nums', gSocket.sockets.size);
 
+    let roomId = '';
     socket.on('create-room', (obj, callback) => {
-      const id = nanoid();
-      socket.join(id);
-      createRoom({ ...obj, id, nums: 1 });
-      callback(id);
+      roomId = nanoid();
+      socket.join(roomId);
+      createRoom({ ...obj, id: roomId, nums: 1 });
+      callback(roomId);
       gSocket.emit('update-rooms');
     });
     socket.on('join-room', (obj, callback) => {
@@ -76,21 +77,24 @@ function createSocket(app) {
       if (room) {
         socket.join(room.id);
         gSocket.emit('update-rooms');
+        roomId = room.id;
+        callback(roomId);
       } else {
         callback(false);
       }
     });
-    socket.on('leave-room', (obj) => {
-      leaveRoom(obj.id);
-      socket.leave(obj.id);
+    socket.on('leave-room', (id) => {
+      leaveRoom(id);
+      socket.leave(id);
       gSocket.emit('update-rooms');
+      roomId = '';
     });
 
     socket.on('msg', (obj) => {
       socket.to(obj.id).emit('msg', obj.msg);
     });
     socket.on('disconnect', () => {
-      leaveRoom(socket.conn.id);
+      leaveRoom(roomId);
       gSocket.emit('online-nums', gSocket.sockets.size);
       gSocket.emit('update-rooms');
     });
