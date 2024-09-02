@@ -18,4 +18,5 @@ export function leaveRoom(id) {
     roomList[index].nums--;
     if (roomList[index].nums <= 0) roomList.splice(index, 1);
   }
+  return !!roomList.find((item) => item.id === id);
 }

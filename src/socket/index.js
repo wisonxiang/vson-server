@@ -73,7 +73,9 @@ function createSocket(app) {
       gSocket.emit('update-rooms');
     });
     socket.on('join-room', (obj, callback) => {
+      console.log('obj', obj);
       const room = joinRoom(obj);
+      console.log('room', room);
       if (room) {
         socket.join(room.id);
         gSocket.emit('update-rooms');
@@ -84,17 +86,23 @@ function createSocket(app) {
       }
     });
     socket.on('leave-room', (id) => {
-      leaveRoom(id);
+      const flag = leaveRoom(id);
       socket.leave(id);
       gSocket.emit('update-rooms');
+      flag && socket.to(roomId).emit('leave-room');
       roomId = '';
     });
 
-    socket.on('msg', (obj) => {
-      socket.to(obj.id).emit('msg', obj.msg);
+    socket.on('rtc-ready', () => {
+      socket.to(roomId).emit('create-offer');
     });
+    socket.on('rtc-sign', (data) => {
+      socket.to(roomId).emit('create-answer', data);
+    });
+
     socket.on('disconnect', () => {
       leaveRoom(roomId);
+      roomId && socket.to(roomId).emit('leave-room');
       gSocket.emit('online-nums', gSocket.sockets.size);
       gSocket.emit('update-rooms');
     });
