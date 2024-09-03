@@ -73,9 +73,7 @@ function createSocket(app) {
       gSocket.emit('update-rooms');
     });
     socket.on('join-room', (obj, callback) => {
-      console.log('obj', obj);
       const room = joinRoom(obj);
-      console.log('room', room);
       if (room) {
         socket.join(room.id);
         gSocket.emit('update-rooms');
